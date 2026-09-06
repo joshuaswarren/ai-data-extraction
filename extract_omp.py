@@ -318,7 +318,7 @@ def extract_session(jsonl_file, include_thinking=True, include_developer=True):
         )
         if not conv:
             continue
-        sig = tuple(m.get('id') for m in conv['messages'])
+        sig = tuple(r.get('id') for r in chain if r.get('id'))
         if sig in seen_sig:
             continue
         seen_sig.add(sig)
