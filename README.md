@@ -110,13 +110,14 @@ extractor in `extract_cursor.py` does not cover)
 ### 10. `extract_omp.py`
 Extracts from omp (Oh My Pi)
 - **Searches**: `$OMP_HOME`, `~/.omp/agent`, `~/.local/share/omp`, `~/.config/omp`, `~/Library/Application Support/omp` (macOS), `%APPDATA%`/`%LOCALAPPDATA%` (Windows)
-- **Formats**: JSONL session transcripts (`sessions/[slugified-cwd]/[timestamp]_[uuid].jsonl`) plus `history.db` (SQLite prompt history, opened read-only/immutable)
+- **Formats**: JSONL session transcripts (`sessions/[slugified-cwd]/[timestamp]_[uuid].jsonl`) plus `history.db` (SQLite prompt history, snapshotted via backup so a live WAL is never mutated)
 - **Includes**:
   - User/assistant/developer messages
   - Thinking (reasoning) blocks
   - Tool calls with arguments, and tool results attached to their assistant turn
   - Per-turn model attribution across mid-session model switches
   - Compaction and branch-summary boundaries
+  - Forked sessions as one conversation per unique id/parentId path
   - Project path, session title, sidecar tool-log filenames
 
 ## 🚀 Quick Start
@@ -180,7 +181,7 @@ extracted_data/
 ├── continue_conversations_20250116_143145.jsonl
 ├── opencode_conversations_20250116_143200.jsonl
 ├── omp_conversations_20250116_143215.jsonl
-└── omp_prompt_history_20250116_143215.jsonl
+└── omp_prompt_history_20250116_143215.json
 ```
 
 ## 📊 Output Format
@@ -272,7 +273,7 @@ Each script follows this pattern:
 - **Locations**:
   - Transcript: `~/.omp/agent/sessions/[slugified-cwd]/[ISO8601]_[uuid].jsonl`
   - Sidecar tool logs: `~/.omp/agent/sessions/[slugified-cwd]/[ISO8601]_[uuid]/`
-  - Prompt history: `~/.omp/agent/history.db` (`history` table, read-only/immutable)
+  - Prompt history: `~/.omp/agent/history.db` (`history` table; copied with SQLite backup, never opened immutable)
 - **Record types** (top-level `type`):
   - `session`, `title`, `title_change` (metadata: id, cwd, timestamp, title)
   - `model_change`, `mode_change`, `thinking_level_change` (runtime state)
