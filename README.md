@@ -518,3 +518,7 @@ This toolkit extracts YOUR OWN data from locally installed AI tools. Users are r
 **Generated**: January 16, 2025
 **Status**: Production Ready
 **Compatibility**: Python 3.6+, macOS/Linux/Windows
+
+## Contributors
+
+Everyone credited so far: [CONTRIBUTORS.md](CONTRIBUTORS.md).
